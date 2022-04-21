@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException,ForbiddenException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException,ForbiddenException, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,7 +8,6 @@ import { Repository } from 'typeorm';
 import { UserDataWithToken } from './interface/UserDataWithToken';
 import * as argon from 'argon2'
 import { UserLoginDto } from './dto/user-login.dto';
-import { STATUS_CODES } from 'http';
 @Injectable()
 export class AuthService {
 
@@ -22,40 +21,34 @@ export class AuthService {
         
         try {
             const existingUser = await this.userRepository.findOne({ email: createUserDto.email })
-            if(existingUser) throw new ForbiddenException()
+            if(existingUser)throw new ForbiddenException({status:HttpStatus.FORBIDDEN,error:"Email is already taken"})
             const hash = await argon.hash(createUserDto.hash)
             const newUser = this.userRepository.create({ ...createUserDto, hash: hash })
             const newRegisteredUser = await this.userRepository.save(newUser)
             const token = await this.signToken(newRegisteredUser.id, newRegisteredUser.email);
             return {user:this.deleteUserhash(newRegisteredUser),token}
-        
         } catch (error) {
-            throw new BadRequestException()
+            return error;
         }
-
-    
+            
     }
 
     async login(userLoginDto:UserLoginDto):Promise<UserDataWithToken> {
-        try {
+
             const user = await this.userRepository.findOne({ email: userLoginDto.email });
-            
             if (!user) {
-                throw new UnauthorizedException()
+                throw new NotFoundException({ status: HttpStatus.UNAUTHORIZED, error: 'Email not found'})
             }
             const pwMatches = await argon.verify(user.hash, userLoginDto.hash);
             if (!pwMatches) {
-                throw new UnauthorizedException()
+                throw new UnauthorizedException({ status: HttpStatus.UNAUTHORIZED, error: 'Wrong Credentials'})
             }
             delete user.hash;
             const token = await this.signToken(user.id, user.email);
             return { user:this.deleteUserhash(user), token };
-        } catch (error) {
-            throw new BadRequestException()
-        }
     }
 
-    async signToken(userId: string, email: string):Promise<string>{
+    signToken(userId: string, email: string):Promise<string>{
         const payload = { sub: userId, email }
         
         return this.jwt.signAsync(payload, {

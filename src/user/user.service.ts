@@ -1,9 +1,8 @@
-import { BadRequestException, ConflictException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Gender, User } from './entities/user.entity';
-
 @Injectable()
 export class UserService {
 
@@ -21,7 +20,15 @@ export class UserService {
         } catch (error) {
             throw new BadRequestException()
         }
-   }
+    }
+    
+    async findMe(id:string): Promise<User>{
+        const myAccount = await this.userRepository.findOne(id);
+
+        delete myAccount.hash;
+        delete myAccount.dateDeleted;
+        return myAccount
+    }
     
     async updateUser(id:string,updateUserDto:UpdateUserDto): Promise<User>{
         try {
