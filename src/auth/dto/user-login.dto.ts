@@ -6,5 +6,5 @@ export class UserLoginDto{
     email: string;
 
     @IsString()
-    password: string;   
+    hash: string;   
 }

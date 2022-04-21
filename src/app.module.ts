@@ -7,6 +7,7 @@ import {ConfigModule} from '@nestjs/config'
 import { UserModule } from './user/user.module';
 import { AuctionItemModule } from './auction-item/auction-item.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 
 @Module({
