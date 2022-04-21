@@ -14,18 +14,7 @@ export class UserService {
         private readonly userRepository: Repository<User>
     ) { }
     
-    async signUp(createUserDto:CreateUserDto):Promise<User> {
-        try {
-            const newUser = this.userRepository.create(createUserDto)
-            return  await this.userRepository.save(newUser)
-        } catch (error) {
-            throw new BadRequestException({error})
-        }
-    }
-
-    logIn(userLoginDto:UserLoginDto) {
-        return userLoginDto
-    }
+    
     
    async findAll():Promise<User[]>{
         try {

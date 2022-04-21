@@ -9,10 +9,7 @@ import { UserService } from './user.service';
 export class UserController {
     constructor(private readonly userService:UserService){}
 
-    @Post('new')
-         signUp(@Body() createUserDto:CreateUserDto) {
-        return this.userService.signUp(createUserDto)
-         }
+    
 
     @Patch(':id')  
     updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
@@ -26,10 +23,6 @@ export class UserController {
         return this.userService.findAll();
          }
 
-    @Post('login')
-    login(userLoginDto:UserLoginDto){
-        return this.userService.logIn(userLoginDto)
-    }
-
+  
 
 }

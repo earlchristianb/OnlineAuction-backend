@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import {ConfigModule} from '@nestjs/config'
 import { UserModule } from './user/user.module';
 import { AuctionItemModule } from './auction-item/auction-item.module';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -26,6 +27,7 @@ import { AuctionItemModule } from './auction-item/auction-item.module';
     }),
     UserModule,
     AuctionItemModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService], 
