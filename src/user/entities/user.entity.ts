@@ -1,4 +1,4 @@
-// import { AuctionItem } from "src/auction-item/entities/auction-item.entity";
+import { AuctionItem } from "src/auction-item/entities/auction-item.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, JoinTable, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -26,10 +26,10 @@ export class User{
     gender: Gender
     
     
-    // @JoinTable()
-    // @OneToMany(() => AuctionItem, (auctionItem) => auctionItem.owner)
-    // items: AuctionItem[];
-    //
+    @JoinTable()
+    @OneToMany(() => AuctionItem, (auctionItem) => auctionItem.owner)
+    items: AuctionItem[];
+    
 
     @CreateDateColumn()
     dateCreated:Date;
