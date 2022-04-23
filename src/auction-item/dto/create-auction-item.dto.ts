@@ -1,6 +1,6 @@
 import { IsArray, IsEnum, IsObject, IsOptional, IsString } from "class-validator";
-import { Tag } from "src/tag/entities/tag.entity";
-import { User } from "src/user/entities/user.entity";
+// import { Tag } from "src/tag/entities/tag.entity";
+// import { User } from "src/user/entities/user.entity";
 
 
 export enum itemStatus{
@@ -8,14 +8,11 @@ export enum itemStatus{
     inAuction = "Auction",
 }
 
-export class createAuctionItem{
+export class CreateAuctionItem{
 
     @IsString()
     name: string;
 
-    @IsObject()
-    owner: User;
-    
     @IsString()
     description: string;
 
@@ -24,6 +21,8 @@ export class createAuctionItem{
 
     @IsArray()
     @IsOptional()
-    tags?: Tag[];
+    tags?: string[];
 
+    @IsEnum(itemStatus)
+    status: itemStatus;
 }

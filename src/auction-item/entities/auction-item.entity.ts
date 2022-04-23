@@ -1,7 +1,7 @@
 
 // import { Tag } from "src/tag/entities/tag.entity";
 import { User } from "src/user/entities/user.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { itemStatus } from "../dto/create-auction-item.dto";
 
 
@@ -11,6 +11,9 @@ export class AuctionItem{
     @PrimaryGeneratedColumn('uuid')
     itemId: string;
 
+    @Column()
+    ownerId: string;
+    @JoinColumn({name:"ownerId"})
     @ManyToOne(
         () => User,
         user => user.items)

@@ -1,4 +1,4 @@
 import { PartialType } from "@nestjs/swagger";
-import { createAuctionItem } from "./create-auction-item.dto";
+import { CreateAuctionItem } from "./create-auction-item.dto";
 
-export class updateAuctionItem extends PartialType(createAuctionItem) {}
+export class UpdateAuctionItem extends PartialType(CreateAuctionItem) {}

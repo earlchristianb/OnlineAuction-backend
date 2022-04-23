@@ -23,7 +23,7 @@ export class UserService {
     }
     
     async findMe(id:string): Promise<User>{
-        const myAccount = await this.userRepository.findOne(id);
+        const myAccount = await this.userRepository.findOne(id, { relations: ['items']});
 
         delete myAccount.hash;
         delete myAccount.dateDeleted;
