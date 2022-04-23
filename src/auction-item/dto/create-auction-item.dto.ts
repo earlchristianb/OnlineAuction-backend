@@ -26,7 +26,4 @@ export class createAuctionItem{
     @IsOptional()
     tags?: Tag[];
 
-    @IsEnum(itemStatus)
-    status: itemStatus;
-
 }
