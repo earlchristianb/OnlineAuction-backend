@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { GetUser } from 'src/common/decorators';
 import { JwtGuard } from 'src/common/guard';
 import { User } from 'src/user/entities/user.entity';
@@ -26,7 +26,7 @@ export class AuctionItemController {
     }
 
     @UseGuards(JwtGuard)
-    @Post(':id')
+    @Patch(':id')
     updateItem(@GetUser() user:User, @Body() updateAuctionItem:UpdateAuctionItem,@Param('id') itemId:string) {
         return this.itemService.updateItem(user.id, itemId, updateAuctionItem);
     }
