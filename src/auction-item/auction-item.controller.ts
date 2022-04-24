@@ -30,5 +30,4 @@ export class AuctionItemController {
     updateItem(@GetUser() user:User, @Body() updateAuctionItem:UpdateAuctionItem,@Param('id') itemId:string) {
         return this.itemService.updateItem(user.id, itemId, updateAuctionItem);
     }
-
 }

@@ -7,11 +7,10 @@ import {ConfigModule} from '@nestjs/config'
 import { UserModule } from './user/user.module';
 import { AuctionItemModule } from './auction-item/auction-item.module';
 import { AuthModule } from './auth/auth.module';
-import { JwtModule } from '@nestjs/jwt';
 import { AuctionItem } from './auction-item/entities/auction-item.entity';
 import { User } from './user/entities/user.entity';
-
-
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { CloudinaryProvider } from './cloudinary/cloudinary.provider';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -32,6 +31,7 @@ import { User } from './user/entities/user.entity';
     UserModule,
     AuctionItemModule,
     AuthModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService], 
