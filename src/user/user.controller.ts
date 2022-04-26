@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 import { JwtGuard } from 'src/common/guard';
@@ -12,12 +12,13 @@ export class UserController {
         
     }
     
+    @UseInterceptors(ClassSerializerInterceptor)
     @Patch(':id')  
     updateUser(@Param('id') id:string , @Body() updateUserDto: UpdateUserDto) {
         return this.userService.updateUser(id,updateUserDto)
     }
         
-    
+    @UseInterceptors(ClassSerializerInterceptor)
     @UseGuards(JwtGuard)
     @Get()
     findMe(@GetUser() user:User) {
