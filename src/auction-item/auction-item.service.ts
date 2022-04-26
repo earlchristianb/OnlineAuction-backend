@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { InjectRepository } from '@nestjs/typeorm';
 import { async } from 'rxjs';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { imageType } from 'src/cloudinary/enum';
 import { Repository } from 'typeorm';
 import { CreateAuctionItem } from './dto/create-auction-item.dto';
 import { UpdateAuctionItem } from './dto/update-auction-item';
@@ -20,7 +21,7 @@ export class AuctionItemService {
     async addItem(ownerId: string, createAuctionItem: CreateAuctionItem): Promise<AuctionItem> {
         try {
             const newItem = await this.saveItem(createAuctionItem, ownerId);
-            const uploadedImageLink = await this.cloudinaryService.uploadItemImage(newItem.imageLink, newItem.itemId)
+            const uploadedImageLink = await this.cloudinaryService.uploadImage(newItem.imageLink, newItem.itemId,imageType.ITEM)
             newItem.imageLink = uploadedImageLink;
             return await this.itemRepository.save(newItem);
        } catch (error) {
@@ -43,7 +44,7 @@ export class AuctionItemService {
                 throw new UnauthorizedException()   
             }
             if (updateAuctionItem.imageLink) {
-                uploadedImageLink = await this.cloudinaryService.uploadItemImage(updateAuctionItem.imageLink, itemId);
+                uploadedImageLink = await this.cloudinaryService.uploadImage(updateAuctionItem.imageLink, itemId,imageType.ITEM);
                 preloadedItem.imageLink = uploadedImageLink;
             }
             const updatedItem = await this.itemRepository.save(preloadedItem);

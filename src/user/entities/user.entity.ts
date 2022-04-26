@@ -9,6 +9,9 @@ export class User{
     @Column()
     @Index({unique:true})
     name: string;
+
+    @Column({nullable:true})
+    imageLink?: string;
     
     @Column()
     address: string;
