@@ -26,12 +26,13 @@ export class AuthService {
             const newUser = this.userRepository.create({ ...createUserDto, hash: hash })
             const newRegisteredUser = await this.userRepository.save(newUser)
             const token = await this.signToken(newRegisteredUser.id, newRegisteredUser.email);
-            return {user:this.deleteUserhash(newRegisteredUser),token}
+            return {user:newRegisteredUser,token}
         } catch (error) {
             return error;
         }
             
     }
+
 
     async login(userLoginDto:UserLoginDto):Promise<UserDataWithToken> {
 
@@ -43,9 +44,8 @@ export class AuthService {
             if (!pwMatches) {
                 throw new UnauthorizedException({ status: HttpStatus.UNAUTHORIZED, error: 'Wrong Credentials'})
             }
-            delete user.hash;
             const token = await this.signToken(user.id, user.email);
-            return { user:this.deleteUserhash(user), token };
+            return { user, token };
     }
 
     signToken(userId: string, email: string):Promise<string>{
@@ -56,10 +56,6 @@ export class AuthService {
         })
     }
 
-    deleteUserhash(user:User) {
-        delete user.hash
-        return user;
-    }
 
 
 }

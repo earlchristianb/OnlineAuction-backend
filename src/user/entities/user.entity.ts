@@ -1,6 +1,6 @@
 import { AuctionItem } from "src/auction-item/entities/auction-item.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, JoinColumn, JoinTable, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-
+import {Exclude} from 'class-transformer'
 @Entity()
 export class User{
     @PrimaryGeneratedColumn('uuid')
@@ -9,7 +9,7 @@ export class User{
     @Column()
     @Index({unique:true})
     name: string;
-
+    
     @Column({nullable:true})
     imageLink?: string;
     
@@ -19,6 +19,7 @@ export class User{
     @Column()
     email: string;
     
+    @Exclude()
     @Column()
     hash: string;
 
@@ -34,9 +35,11 @@ export class User{
     @CreateDateColumn()
     dateCreated:Date;
     
+    @Exclude()
     @UpdateDateColumn()
     dateUpdated: Date;
 
+    @Exclude()
     @DeleteDateColumn()
     dateDeleted: Date;
 }
