@@ -18,7 +18,6 @@ export class AuthService {
     ){}
 
     async signup(createUserDto:CreateUserDto):Promise<UserDataWithToken>{
-        
         try {
             const existingUser = await this.userRepository.findOne({ email: createUserDto.email })
             if(existingUser)throw new ForbiddenException({status:HttpStatus.FORBIDDEN,error:"Email is already taken"})
@@ -35,7 +34,6 @@ export class AuthService {
 
 
     async login(userLoginDto:UserLoginDto):Promise<UserDataWithToken> {
-
             const user = await this.userRepository.findOne({ email: userLoginDto.email });
             if (!user) {
                 throw new NotFoundException({ status: HttpStatus.UNAUTHORIZED, error: 'Email not found'})
@@ -44,7 +42,8 @@ export class AuthService {
             if (!pwMatches) {
                 throw new UnauthorizedException({ status: HttpStatus.UNAUTHORIZED, error: 'Wrong Credentials'})
             }
-            const token = await this.signToken(user.id, user.email);
+        const token = await this.signToken(user.id, user.email);
+            console.log(user.hello);
             return { user, token };
     }
 

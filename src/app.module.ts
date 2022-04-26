@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TagModule } from './tag/tag.module';
@@ -11,6 +11,7 @@ import { AuctionItem } from './auction-item/entities/auction-item.entity';
 import { User } from './user/entities/user.entity';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CloudinaryProvider } from './cloudinary/cloudinary.provider';
+import { CacheConfigService } from './cache/cache-config.service';
 @Module({
   imports: [
     ConfigModule.forRoot({

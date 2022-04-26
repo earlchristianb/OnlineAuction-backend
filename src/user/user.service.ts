@@ -29,7 +29,6 @@ export class UserService {
     
     async findMe(id:string): Promise<User>{
         const myAccount = await this.userRepository.findOne(id, { relations: ['items'] });
-        
         return myAccount
     }
     
