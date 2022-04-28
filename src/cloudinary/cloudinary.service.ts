@@ -16,4 +16,10 @@ export class CloudinaryService {
              throw new BadRequestException()
         }
     }
+
+    async removeInCloudinary(publicId:string){
+        const apiresponse = await v2.uploader.destroy(publicId, {
+            invalidate: true});
+        console.log(apiresponse)
+    }
 }

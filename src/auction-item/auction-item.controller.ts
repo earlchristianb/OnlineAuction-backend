@@ -1,4 +1,4 @@
-import { Body, CacheInterceptor, Controller, Get, Param, Patch, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, CacheInterceptor, Controller, Delete, Get, Param, Patch, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { GetUser } from 'src/common/decorators';
 import { JwtGuard } from 'src/common/guard';
 import { User } from 'src/user/entities/user.entity';
@@ -30,5 +30,12 @@ export class AuctionItemController {
     @Patch(':id')
     updateItem(@GetUser() user:User, @Body() updateAuctionItem:UpdateAuctionItem,@Param('id') itemId:string) {
         return this.itemService.updateItem(user.id, itemId, updateAuctionItem);
+    }
+
+
+    @UseGuards(JwtGuard)
+    @Delete(':id')
+    deleteItemPicture(@Param('id') itemId:string, @GetUser() user:User) {
+        return this.itemService.removeItem(itemId, user.id);
     }
 }

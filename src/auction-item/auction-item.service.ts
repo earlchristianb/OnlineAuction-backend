@@ -1,19 +1,22 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { async } from 'rxjs';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { imageType } from 'src/cloudinary/enum';
 import { Repository } from 'typeorm';
 import { CreateAuctionItem } from './dto/create-auction-item.dto';
 import { UpdateAuctionItem } from './dto/update-auction-item';
 import { AuctionItem } from './entities/auction-item.entity';
+import { ItemDeletedEvent } from './events/item-deleted.events';
+import { ItemEvents } from './events/item-events.enum';
 
 @Injectable()
 export class AuctionItemService {
     constructor(
         @InjectRepository(AuctionItem)
         private itemRepository: Repository<AuctionItem>,
-        private readonly cloudinaryService:CloudinaryService
+        private readonly cloudinaryService: CloudinaryService,
+        private readonly eventEmitter: EventEmitter2
     ) {
         
     }
@@ -30,9 +33,25 @@ export class AuctionItemService {
        
     }
 
+    async removeItem(itemId: string, userId:string) {
+        const existingItem = await this.itemRepository.findOne(itemId);
+        if (existingItem.ownerId !== userId)
+            throw new UnauthorizedException()
+        const removedItem = await this.itemRepository.delete(itemId);    
+        if (removedItem)
+            this.eventEmitter.emit(ItemEvents.ItemRemoved, new ItemDeletedEvent(itemId));
+        return 'Succesfully removed';
+    }
+
+    @OnEvent(ItemEvents.ItemRemoved)
+    async removeItemPicture(payload:ItemDeletedEvent) {
+        const publicId = `Auction/items/${payload.id}`
+        this.cloudinaryService.removeInCloudinary(publicId);
+    }
+
     async findMyItems(ownerId:string):Promise<AuctionItem[]> {
         const myItems = await this.itemRepository.find({ ownerId: ownerId });
-        return myItems
+        return myItems;
     }
 
     async updateItem(ownerId: string, itemId: string, updateAuctionItem: UpdateAuctionItem): Promise<AuctionItem> {

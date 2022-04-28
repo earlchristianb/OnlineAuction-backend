@@ -8,13 +8,16 @@ import { Repository } from 'typeorm';
 import { UserDataWithToken } from './interface/UserDataWithToken';
 import * as argon from 'argon2'
 import { UserLoginDto } from './dto/user-login.dto';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { imageType } from 'src/cloudinary/enum';
 @Injectable()
 export class AuthService {
 
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>,
         private jwt: JwtService,
-        private config:ConfigService
+        private config: ConfigService,
+        private cloudinaryService:CloudinaryService    
     ){}
 
     async signup(createUserDto:CreateUserDto):Promise<UserDataWithToken>{
@@ -22,10 +25,13 @@ export class AuthService {
             const existingUser = await this.userRepository.findOne({ email: createUserDto.email })
             if(existingUser)throw new ForbiddenException({status:HttpStatus.FORBIDDEN,error:"Email is already taken"})
             const hash = await argon.hash(createUserDto.hash)
-            const newUser = this.userRepository.create({ ...createUserDto, hash: hash })
+            const newUser = this.userRepository.create({ ...createUserDto, hash: hash });
             const newRegisteredUser = await this.userRepository.save(newUser)
-            const token = await this.signToken(newRegisteredUser.id, newRegisteredUser.email);
-            return {user:newRegisteredUser,token}
+            const uploadedImageLink = await this.cloudinaryService.uploadImage(newRegisteredUser.imageLink, newRegisteredUser.id,imageType.USER)
+            newRegisteredUser.imageLink = uploadedImageLink;
+            const newRegisteredUserWithUpdatedImageLink = await this.userRepository.save(newRegisteredUser);
+            const token = await this.signToken(newRegisteredUserWithUpdatedImageLink.id, newRegisteredUserWithUpdatedImageLink.email);
+            return {user:newRegisteredUserWithUpdatedImageLink,token}
         } catch (error) {
             return error;
         }

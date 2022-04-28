@@ -12,8 +12,10 @@ import { User } from './user/entities/user.entity';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CloudinaryProvider } from './cloudinary/cloudinary.provider';
 import { CacheConfigService } from './cache/cache-config.service';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
     isGlobal:true
     }),
